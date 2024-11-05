@@ -1,14 +1,24 @@
-const mongoose = require('mongoose');
+import { MongoClient, ServerApiVersion } from "mongodb";
 
-const connectDB = async () => {
-    try {
-        await mongoose.connect(process.env.MONGODB_URI, );
-        console.log('MongoDB connected successfully.');
-    } catch (error) {
-        console.error('Error connecting to the database: ', error);
-    }
-};
+const URI = "mongodb://mongodb:27017";
+const client = new MongoClient(URI, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
+});
 
-connectDB();
+try {
+  // Connect the client to the server
+  await client.connect();
+  // Send a ping to confirm a successful connection
+  await client.db("admin").command({ ping: 1 });
+  console.log("Pinged your deployment. You successfully connected to MongoDB!");
+} catch (err) {
+  console.error(err);
+}
 
-module.exports = mongoose;
+let db = client.db("employees");
+
+export default db;
