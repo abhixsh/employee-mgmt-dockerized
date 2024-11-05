@@ -1,9 +1,9 @@
-/** @type {import('tailwindcss').Config} */
 export default {
-  content: [],
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}", // This targets all files in the `src` directory
+  ],
   theme: {
     extend: {},
   },
   plugins: [],
-}
-
+};
