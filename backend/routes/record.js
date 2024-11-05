@@ -1,9 +1,9 @@
 import express from "express";
 
 // This will help us connect to the database
-import db from "../db/connection.js";
+import dbPromise from "../db/connection.js"; // Update to import dbPromise
 
-// This help convert the id from string to ObjectId for the _id.
+// This helps convert the id from string to ObjectId for the _id.
 import { ObjectId } from "mongodb";
 
 // router is an instance of the express router.
@@ -11,21 +11,42 @@ import { ObjectId } from "mongodb";
 // The router will be added as a middleware and will take control of requests starting with path /record.
 const router = express.Router();
 
+// Ensure db is resolved from the promise
+let db;
+
+dbPromise.then(database => {
+  db = database;
+}).catch(err => {
+  console.error("Failed to connect to the database:", err);
+});
+
 // This section will help you get a list of all the records.
 router.get("/", async (req, res) => {
-  let collection = await db.collection("records");
-  let results = await collection.find({}).toArray();
-  res.send(results).status(200);
+  try {
+    let collection = await db.collection("records");
+    let results = await collection.find({}).toArray();
+    res.status(200).send(results); // Status should be set before sending the response
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching records");
+  }
 });
 
 // This section will help you get a single record by id
 router.get("/:id", async (req, res) => {
-  let collection = await db.collection("records");
-  let query = { _id: new ObjectId(req.params.id) };
-  let result = await collection.findOne(query);
+  try {
+    let collection = await db.collection("records");
+    let query = { _id: new ObjectId(req.params.id) };
+    let result = await collection.findOne(query);
 
-  if (!result) res.send("Not found").status(404);
-  else res.send(result).status(200);
+    if (!result) {
+      return res.status(404).send("Not found"); // Return here to avoid sending multiple responses
+    }
+    res.status(200).send(result); // Status should be set before sending the response
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching record");
+  }
 });
 
 // This section will help you create a new record.
@@ -38,7 +59,7 @@ router.post("/", async (req, res) => {
     };
     let collection = await db.collection("records");
     let result = await collection.insertOne(newDocument);
-    res.send(result).status(204);
+    res.status(201).send(result); // Use 201 for created resource
   } catch (err) {
     console.error(err);
     res.status(500).send("Error adding record");
@@ -59,7 +80,10 @@ router.patch("/:id", async (req, res) => {
 
     let collection = await db.collection("records");
     let result = await collection.updateOne(query, updates);
-    res.send(result).status(200);
+    if (result.matchedCount === 0) {
+      return res.status(404).send("Record not found"); // Handle case where no records match
+    }
+    res.status(200).send(result); // Send response after checking updates
   } catch (err) {
     console.error(err);
     res.status(500).send("Error updating record");
@@ -71,10 +95,13 @@ router.delete("/:id", async (req, res) => {
   try {
     const query = { _id: new ObjectId(req.params.id) };
 
-    const collection = db.collection("records");
+    const collection = await db.collection("records"); // Use await here
     let result = await collection.deleteOne(query);
 
-    res.send(result).status(200);
+    if (result.deletedCount === 0) {
+      return res.status(404).send("Record not found"); // Handle case where no records are deleted
+    }
+    res.status(200).send("Record deleted"); // Confirm deletion
   } catch (err) {
     console.error(err);
     res.status(500).send("Error deleting record");
