@@ -1,27 +1,32 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
+import dotenv from "dotenv";
 
-const URI = "mongodb://localhost:27017"; // Use the correct URI for your setup
-const client = new MongoClient(URI, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  },
-});
+dotenv.config(); // Load .env variables
 
-// Create an async function to handle the connection
-async function connectToDatabase() {
-  try {
-    await client.connect(); // Connect the client to the server
-    await client.db("admin").command({ ping: 1 }); // Send a ping to confirm connection
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-    return client.db("employees"); // Return the database instance
-  } catch (err) {
-    console.error("Error connecting to MongoDB:", err);
-  }
+const URI = process.env.MONGODB_URI; // Use environment variable
+
+if (!URI) {
+    console.error("Error: MongoDB URI is not defined in the environment variables.");
+    process.exit(1); // Exit if URI is missing
 }
 
-// Call the function to connect and export the database instance
-const dbPromise = connectToDatabase();
+const client = new MongoClient(URI, {
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+    },
+});
 
-export default dbPromise; // Export the promise, which resolves to the db instance
+async function connectToDatabase() {
+    try {
+        await client.connect();
+        console.log("Successfully connected to MongoDB Atlas!");
+        return client.db("employees"); // Return specific database instance
+    } catch (err) {
+        console.error("Error connecting to MongoDB:", err);
+    }
+}
+
+const dbPromise = connectToDatabase();
+export default dbPromise;
