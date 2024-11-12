@@ -1,9 +1,7 @@
-import { MongoClient, ServerApiVersion, ObjectId } from "mongodb";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { MongoClient, ServerApiVersion } from "mongodb";
 import dotenv from "dotenv";
 
-dotenv.config(); // Load environment variables
+dotenv.config(); 
 
 const URI = process.env.MONGODB_URI;
 if (!URI) {
@@ -23,7 +21,7 @@ async function connectToDatabase() {
     try {
         await client.connect();
         console.log("Successfully connected to MongoDB");
-        return client.db("company"); // Specify your DB name
+        return client.db("company"); 
     } catch (err) {
         console.error("Error connecting to MongoDB:", err);
     }
