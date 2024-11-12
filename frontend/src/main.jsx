@@ -1,12 +1,13 @@
+// src/main.jsx
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
-import Record from "./components/Record";
 import RecordList from "./components/RecordList";
+import Record from "./components/Record";
+import Landing from "./components/Landing";
+import AddEmployee from "./components/AddEmployee";
+import AboutUs from "./components/AboutUs";
 import "./index.css";
 
 const router = createBrowserRouter([
@@ -14,30 +15,11 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      {
-        path: "/",
-        element: <RecordList />,
-      },
-    ],
-  },
-  {
-    path: "/create",
-    element: <App />,
-    children: [
-      {
-        path: "/create",
-        element: <Record />,
-      },
-    ],
-  },
-  {
-    path: "/edit/:id",
-    element: <App />,
-    children: [
-      {
-        path: "/edit/:id",
-        element: <Record />,
-      },
+      { path: "/", element: <Landing /> },
+      { path: "/records", element: <RecordList /> },
+      { path: "/create", element: <AddEmployee /> },
+      { path: "/edit/:id", element: <Record /> },
+      { path: "/about", element: <AboutUs /> },
     ],
   },
 ]);
