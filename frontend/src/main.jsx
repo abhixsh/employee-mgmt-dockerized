@@ -10,6 +10,8 @@ import AddEmployee from "./components/AddEmployee";
 import AboutUs from "./components/AboutUs";
 import Login from "./components/Login"; // New
 import Profile from "./components/Profile"; // New
+import Register from "./components/Register";
+import PrivateRoute from "./components/PrivateRoute";
 import "./index.css";
 
 // Simple auth check function to protect routes
@@ -37,6 +39,8 @@ const router = createBrowserRouter([
       { path: "/about", element: <AboutUs /> },
       { path: "/login", element: <Login /> }, // New Login Route
       { path: "/profile", element: <ProtectedRoute element={<Profile />} /> }, // New Profile Route
+      { path: "/register", element: <Register /> },
+      { path: "/privateroute", element: <PrivateRoute /> }, // New PrivateRoute
     ],
   },
 ]);
