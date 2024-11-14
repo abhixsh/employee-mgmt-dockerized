@@ -7,8 +7,6 @@ import dbPromise from "../db/connection.js"; // Update to import dbPromise
 import { ObjectId } from "mongodb";
 
 // router is an instance of the express router.
-// We use it to define our routes.
-// The router will be added as a middleware and will take control of requests starting with path /record.
 const router = express.Router();
 
 // Ensure db is resolved from the promise
@@ -20,19 +18,19 @@ dbPromise.then(database => {
   console.error("Failed to connect to the database:", err);
 });
 
-// This section will help you get a list of all the records.
+// Get all records (list of employees)
 router.get("/", async (req, res) => {
   try {
     let collection = await db.collection("records");
     let results = await collection.find({}).toArray();
-    res.status(200).send(results); // Status should be set before sending the response
+    res.status(200).json(results); // Return array of records in JSON format
   } catch (err) {
     console.error(err);
     res.status(500).send("Error fetching records");
   }
 });
 
-// This section will help you get a single record by id
+// Get a single record by id
 router.get("/:id", async (req, res) => {
   try {
     let collection = await db.collection("records");
@@ -40,33 +38,38 @@ router.get("/:id", async (req, res) => {
     let result = await collection.findOne(query);
 
     if (!result) {
-      return res.status(404).send("Not found"); // Return here to avoid sending multiple responses
+      return res.status(404).send("Record not found"); // Return if no record found
     }
-    res.status(200).send(result); // Status should be set before sending the response
+    res.status(200).json(result); // Return single record as JSON
   } catch (err) {
     console.error(err);
     res.status(500).send("Error fetching record");
   }
 });
 
-// This section will help you create a new record.
+// Create new record (single or bulk)
 router.post("/", async (req, res) => {
   try {
-    let newDocument = {
-      name: req.body.name,
-      position: req.body.position,
-      level: req.body.level,
-    };
+    let newDocuments = req.body; // Assuming the body contains an array of employee records
+
+    // Check if the body is an array or a single object
+    if (!Array.isArray(newDocuments)) {
+      newDocuments = [newDocuments]; // Convert to array if it's a single object
+    }
+
     let collection = await db.collection("records");
-    let result = await collection.insertOne(newDocument);
-    res.status(201).send(result); // Use 201 for created resource
+    
+    // Bulk insert if multiple records are sent
+    let result = await collection.insertMany(newDocuments);
+    
+    res.status(201).json(result); // Return the result of the insert operation
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error adding record");
+    res.status(500).send("Error adding records");
   }
 });
 
-// This section will help you update a record by id.
+// Update a record by id
 router.patch("/:id", async (req, res) => {
   try {
     const query = { _id: new ObjectId(req.params.id) };
@@ -80,28 +83,31 @@ router.patch("/:id", async (req, res) => {
 
     let collection = await db.collection("records");
     let result = await collection.updateOne(query, updates);
+
     if (result.matchedCount === 0) {
-      return res.status(404).send("Record not found"); // Handle case where no records match
+      return res.status(404).send("Record not found"); // If no record is found to update
     }
-    res.status(200).send(result); // Send response after checking updates
+
+    res.status(200).json(result); // Return the updated result
   } catch (err) {
     console.error(err);
     res.status(500).send("Error updating record");
   }
 });
 
-// This section will help you delete a record
+// Delete a record by id
 router.delete("/:id", async (req, res) => {
   try {
     const query = { _id: new ObjectId(req.params.id) };
 
-    const collection = await db.collection("records"); // Use await here
+    const collection = await db.collection("records");
     let result = await collection.deleteOne(query);
 
     if (result.deletedCount === 0) {
-      return res.status(404).send("Record not found"); // Handle case where no records are deleted
+      return res.status(404).send("Record not found"); // If no record is found to delete
     }
-    res.status(200).send("Record deleted"); // Confirm deletion
+
+    res.status(200).send("Record deleted"); // Confirm the record is deleted
   } catch (err) {
     console.error(err);
     res.status(500).send("Error deleting record");
