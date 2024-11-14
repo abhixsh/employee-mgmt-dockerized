@@ -1,4 +1,3 @@
-// src/components/Landing.jsx
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -17,7 +16,6 @@ export default function Landing() {
         fetchEmployees();
     }, []);
 
-    // Filter for senior-level employees
     const seniorEmployees = employees.filter(employee => employee.level === "Senior");
 
     return (
@@ -27,7 +25,6 @@ export default function Landing() {
             transition={{ duration: 1.5 }}
             className="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8"
         >
-            {/* Welcome Section */}
             <motion.div
                 initial={{ y: -50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -62,7 +59,6 @@ export default function Landing() {
                 />
             </motion.div>
 
-            {/* Testimonial Section */}
             <motion.div
                 initial={{ y: 50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -97,7 +93,7 @@ export default function Landing() {
                 ))}
             </motion.div> */}
 
-            {/* Senior Employees Section */}
+
             {seniorEmployees.length > 0 && (
                 <motion.div
                     initial={{ opacity: 0 }}

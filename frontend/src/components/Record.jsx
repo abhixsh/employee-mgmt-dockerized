@@ -56,7 +56,7 @@ export default function Record() {
       <h2 className="text-3xl font-bold mb-6">Employee Record</h2>
       <form onSubmit={onSubmit} className="bg-white p-8 rounded-lg shadow-md">
         <div className="space-y-6">
-          {/* Name Input */}
+
           <div>
             <label className="block text-sm font-medium text-gray-700">Name</label>
             <input
@@ -68,7 +68,6 @@ export default function Record() {
             />
           </div>
 
-          {/* Position Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700">Position</label>
             <input
@@ -80,7 +79,6 @@ export default function Record() {
             />
           </div>
 
-          {/* Level Radio Options */}
           <fieldset>
             <legend className="text-sm font-medium text-gray-700">Employee Level</legend>
             <div className="mt-4 flex space-x-4">
@@ -101,7 +99,6 @@ export default function Record() {
           </fieldset>
         </div>
 
-        {/* Submit Button */}
         <button
           type="submit"
           className="mt-6 w-full inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
