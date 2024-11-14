@@ -103,7 +103,7 @@ export default function Landing() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 1.2, duration: 1 }}
-                    className="mt-16 px-4"
+                    className="mt-16 px-4 pb-8"  
                 >
                     <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-blue-600 text-center mb-8">
                         Meet Our Senior Team

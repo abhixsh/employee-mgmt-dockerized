@@ -3,16 +3,27 @@ import { NavLink } from "react-router-dom";
 
 export default function Navbar() {
   return (
-    <nav className="bg-white shadow-md p-4 flex justify-between">
-      <div>
-        <h1 className="text-2xl font-bold text-blue-600">Employee Management</h1>
-      </div>
-      <div className="space-x-4">
-        <NavLink to="/" className="text-blue-500">Home</NavLink>
-        <NavLink to="/records" className="text-blue-500">Employees</NavLink>
-        <NavLink to="/create" className="text-blue-500">Add Employee</NavLink>
-        <NavLink to="/about" className="text-blue-500">About Us</NavLink>
-      </div>
-    </nav>
+    <div className="p-4"> {/* Added padding here */}
+      <nav className="w-full max-w-[1395px] h-[71px] bg-white rounded-[15px] shadow flex items-center justify-between px-5 mx-auto">
+        {/* Logo Linked to Home */}
+        <NavLink to="/" className="flex items-center">
+          <span className="text-blue-600 text-3xl font-black font Lato">E</span>
+          <span className="text-bold text-3xl font-black font Lato">biz</span>
+        </NavLink>
+
+        {/* Navigation Links */}
+        <div className="flex space-x-8">
+          <NavLink to="/records" className="text-bold text-base font-bold font Lato">
+            Employees
+          </NavLink>
+          <NavLink to="/create" className="text-bold text-base font-bold font Lato">
+            Add Employee
+          </NavLink>
+          <NavLink to="/about" className="text-bold text-base font-bold font Lato">
+            About Us
+          </NavLink>
+        </div>
+      </nav>
+    </div>
   );
 }
