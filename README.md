@@ -23,10 +23,10 @@ You can try the live version of this project by visiting the following link: [Li
 - **Nginx:** Web server to serve the React app in production.
 
 ## Project Images
-![Landing Page](image.png)
-![Senior Section](image-1.png)
-![Add Emp](image-2.png)
-![Add Emp](image-3.png)
+![Landing Page](img/image.png)
+![Senior Section](img/image-1.png)
+![Add Emp](img/image-2.png)
+![Add Emp](img/image-3.png)
 
 ## Setup Guide
 
