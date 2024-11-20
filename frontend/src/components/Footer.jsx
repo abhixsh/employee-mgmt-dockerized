@@ -15,13 +15,13 @@ export default function Footer() {
         </div>
 
         <div className="flex space-x-4 mt-4 md:mt-0 text-gray-500">
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600">
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600">
             <FaFacebookF size={20} />
           </a>
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600">
+          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600">
             <FaTwitter size={20} />
           </a>
-          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600">
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600">
             <FaLinkedinIn size={20} />
           </a>
         </div>

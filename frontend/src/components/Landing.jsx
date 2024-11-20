@@ -54,7 +54,7 @@ export default function Landing() {
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: 0.5, duration: 1 }}
                     className="w-64 h-64 md:w-96 md:h-96 rounded-lg mt-8 md:mt-0 md:ml-auto"
-                    src="src\img\landing.jpg"
+                    src="img\landing.jpg"
                     alt="Welcome graphic"
                 />
             </motion.div>

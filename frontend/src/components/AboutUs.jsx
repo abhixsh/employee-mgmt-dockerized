@@ -20,7 +20,7 @@ export default function AboutUs() {
             </p>
             <img
                 className="w-full max-w-5xl h-auto rounded-[33px]"
-                src="src/img/about.png"
+                src="img/about.png"
                 alt="Company Overview"
             />
         </div>

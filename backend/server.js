@@ -13,3 +13,7 @@ app.use("/record", records);
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
+
+app.use('/0', (req, res) => {
+  res.send('Hello World');
+});
