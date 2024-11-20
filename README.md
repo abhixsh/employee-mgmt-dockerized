@@ -1,4 +1,4 @@
-# Employee Management System (MERN Stack - Dockerized)
+# Employee Management System 
 
 ## Project Overview
 The Employee Management System is a web application built using the MERN stack (MongoDB, Express, React, Node.js) to manage employee data in an organization. This system enables administrators to add, view, edit, and delete employee records. Docker is used to containerize the backend and frontend, ensuring the application runs consistently across different environments.
