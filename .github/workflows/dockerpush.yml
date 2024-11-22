@@ -16,7 +16,9 @@ jobs:
     docker:
         runs-on: ubuntu-latest
         steps:
-            - name: Run docker compose in the backend directory
-              run: |
-                cd backend
-                docker compose up
+            - name: Get code
+              uses: actions/checkout@v3
+            - name: List All items in root
+              uses: ls -a
+            - name: Run docker compose in the root directory
+              run: docker compose up
