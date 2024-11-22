@@ -1,0 +1,14 @@
+name: Backend Docker Push
+on: push
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Get code
+              uses: actions/checkout@v3
+            - name: Go to the backend
+              run: cd backend
+            - name: Install NPM
+              run: npm i
+              
+             
