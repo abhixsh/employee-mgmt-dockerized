@@ -1,7 +1,7 @@
 name: Backend Docker Push
 on: push
 jobs:
-    build:
+    test:
         runs-on: ubuntu-latest
         steps:
             - name: Get code
@@ -14,6 +14,7 @@ jobs:
                 ls -a
                 npm i
     docker:
+        needs: test
         runs-on: ubuntu-latest
         steps:
             - name: Get code
@@ -24,3 +25,6 @@ jobs:
               run: docker compose up -d
             - name: Check docker files 
               run: docker ps -a
+            - name: Docker Login and push Images
+              run: |
+                docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
