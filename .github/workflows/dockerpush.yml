@@ -11,6 +11,6 @@ jobs:
             - name: Navigate to a directory
               run: |
                 cd backend
-                la -a
+                ls -a
             - name: Install NPM
               run: npm i
