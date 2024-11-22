@@ -19,6 +19,6 @@ jobs:
             - name: Get code
               uses: actions/checkout@v3
             - name: List All items in root
-              uses: ls -a
+              run: ls -a
             - name: Run docker compose in the root directory
               run: docker compose up
