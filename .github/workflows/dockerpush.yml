@@ -13,3 +13,10 @@ jobs:
                 cd backend
                 ls -a
                 npm i
+    docker:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Run docker compose in the backend directory
+              run: |
+                cd backend
+                docker compose up
