@@ -6,8 +6,8 @@ jobs:
         steps:
             - name: Get code
               uses: actions/checkout@v3
-            - name: Go to the backend
-              run: cd backend
+            # - name: Go to the backend
+            #   run: cd backend
             - name: List Files
               run: ls -a
             - name: Install NPM
