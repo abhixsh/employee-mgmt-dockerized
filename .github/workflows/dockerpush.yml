@@ -21,4 +21,6 @@ jobs:
             - name: List All items in root
               run: ls -a
             - name: Run docker compose in the root directory
-              run: docker compose up
+              run: docker compose up -d
+            - name: Check docker files 
+              run: docker ps -a
