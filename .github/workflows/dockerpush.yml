@@ -9,8 +9,11 @@ jobs:
             - name: List Files
               run: ls -a
             - name: Navigate to a directory
-              run: |
-                cd backend
-                ls -a
+            #   run: |
+            #     cd backend
+            #     ls -a
+              run: cd backend
+            - name: List Files
+              run: ls -a
             - name: Install NPM
               run: npm i
