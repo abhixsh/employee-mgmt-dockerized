@@ -1,7 +1,7 @@
 name: Backend Docker Push
 on: push
 jobs:
-    test:
+    test-backend:
         runs-on: ubuntu-latest
         steps:
             - name: Get code
@@ -13,8 +13,22 @@ jobs:
                 cd backend
                 ls -a
                 npm i
-    docker:
-        needs: test
+    test-frontend:
+      runs-on: ubuntu-latest
+      steps:
+          - name: Get code
+            uses: actions/checkout@v3
+          - name: List files in the root directory
+            run: ls -a
+          - name: Install NPM dependencies in the frontend directory
+            run: |
+              cd frontend
+              ls -a
+              npm i
+    docker-push:
+        needs: 
+          - test-backend 
+          - test-frontend
         runs-on: ubuntu-latest
         steps:
             - name: Get code
