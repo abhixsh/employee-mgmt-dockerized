@@ -279,3 +279,89 @@ docker-compose up --build
 ```
 
 This will start both the backend and the frontend in their respective containers. Your backend will be available at [http://localhost:5050](http://localhost:5050), and your frontend will be available at [http://localhost:3000](http://localhost:3000).
+
+### Step 13: Setup GitHub Action to Push Images to Docker Hub
+
+To automate pushing Docker images of the backend and frontend to Docker Hub upon a push event in your GitHub repository, use the following GitHub Actions workflow. This ensures consistent builds and deployments from your repository.
+
+#### GitHub Actions Workflow: `backend-docker-push.yml`
+
+Create a GitHub Actions workflow file in `.github/workflows/backend-docker-push.yml`:
+
+```yaml
+name: Backend and Frontend Docker Push
+
+on: push
+
+jobs:
+    test-backend:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+                uses: actions/checkout@v3
+            
+            - name: Install backend dependencies
+                run: |
+                    cd backend
+                    npm install
+
+    test-frontend:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+                uses: actions/checkout@v3
+
+            - name: Install frontend dependencies
+                run: |
+                    cd frontend
+                    npm install
+
+    docker-push:
+        needs: 
+            - test-backend 
+            - test-frontend
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+                uses: actions/checkout@v3
+
+            - name: Build Docker images
+                run: |
+                    docker-compose build
+
+            - name: Log in to Docker Hub
+                run: |
+                    echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+            - name: Push Backend Image to Docker Hub
+                run: |
+                    docker tag emp-backend ${{ secrets.DOCKER_USERNAME }}/emp-backend:latest
+                    docker push ${{ secrets.DOCKER_USERNAME }}/emp-backend:latest
+
+            - name: Push Frontend Image to Docker Hub
+                run: |
+                    docker tag nginx ${{ secrets.DOCKER_USERNAME }}/emp-frontend:latest
+                    docker push ${{ secrets.DOCKER_USERNAME }}/emp-frontend:latest
+```
+
+#### Steps Explained:
+
+- **Trigger:** This workflow is triggered on any push to the main branch. Adjust the branch name as needed.
+- **Test Backend:** Installs and verifies the backend dependencies. [Optional]
+- **Test Frontend:** Installs and verifies the frontend dependencies. [Optional]
+- **Docker Build and Push:** After successfully testing, Docker images are built using `docker-compose` and pushed to Docker Hub using your saved credentials.
+
+#### Setting Up Secrets:
+
+To store your Docker Hub credentials securely in the GitHub repository:
+
+1. Go to your repository's **Settings > Secrets and variables > Actions**.
+2. Add the following secrets:
+     - `DOCKER_USERNAME`: Your Docker Hub username.
+     - `DOCKER_PASSWORD`: Your Docker Hub password or access token.
+
+#### Verifying Workflow:
+
+1. Commit and push the `backend-docker-push.yml` file to your repository.
+2. Check the **Actions** tab in your GitHub repository to monitor the workflow's execution.
+3. Once complete, the backend and frontend Docker images will be available on Docker Hub under your account, tagged as `latest`.
