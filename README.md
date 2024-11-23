@@ -1,7 +1,7 @@
 # Employee Management System 
 
 ## Project Overview
-The Employee Management System is a web application built using the MERN stack (MongoDB, Express, React, Node.js) to manage employee data in an organization. This system enables administrators to add, view, edit, and delete employee records. Docker is used to containerize the backend and frontend, ensuring the application runs consistently across different environments.
+The Employee Management System is a web application that uses the MERN stack (MongoDB, Express, React, Node.js) to manage employee data. It enables administrators to perform CRUD operations (Create, Read, Update, Delete) and features a React-powered responsive interface. The project is containerized using Docker for consistent deployment and integrated with GitHub Actions for automation.
 
 ## Features
 - **User Authentication:** Admin and employee login.
@@ -21,6 +21,7 @@ You can try the live version of this project by visiting the following link: [Li
 - **Node.js:** JavaScript runtime for the backend.
 - **Docker:** Containerization for consistent deployment across environments.
 - **Nginx:** Web server to serve the React app in production.
+- **GitHub Action:** Automates testing and deployment pipelines.
 
 ## Project Images
 ![Landing Page](img/image.png)
@@ -69,7 +70,7 @@ This will install all the required dependencies specified in the `package.json` 
 Navigate to the frontend directory (assuming your frontend is in a folder called `frontend`):
 
 ```bash
-cd ../frontend
+cd frontend
 ```
 
 Install the frontend dependencies:
@@ -84,7 +85,7 @@ npm install
 Navigate back to the backend directory:
 
 ```bash
-cd ../backend
+cd backend
 ```
 
 Start the backend server:
@@ -157,7 +158,7 @@ docker run -p 5050:5050 my-backend
 
 This will run your backend on port 5050.
 
-### Step 7: Multi-stage Build for Backend (Optional)
+### Step 7: Multi-stage Build for Backend
 A multi-stage build allows you to create smaller images by having multiple stages in your Dockerfile.
 
 #### Step-by-Step:
