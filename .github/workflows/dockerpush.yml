@@ -37,4 +37,4 @@ jobs:
             - name: Push Frontend to DockerHub
               run: |
                 docker tag nginx ${{ secrets.DOCKER_USERNAME }}/emp-frontend:latest
-                docker push ${{ secrets.DOCKER_USERNAME }}/nginx:latest
+                docker push ${{ secrets.DOCKER_USERNAME }}/emp-frontend:latest
