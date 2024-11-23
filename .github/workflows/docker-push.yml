@@ -1,4 +1,4 @@
-name: Backend Docker Push
+name: Backend and Frontend Docker Push
 on: push
 jobs:
     test-backend:
