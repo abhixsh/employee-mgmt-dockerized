@@ -1,0 +1,50 @@
+name: AWS EC2 push
+
+on: 
+    workflow_dispatch:
+    # push:
+    #     branches:
+    #         - master
+
+jobs:
+    docker-push:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Get code
+              uses: actions/checkout@v3
+
+            - name: List All items in root
+              run: ls -a
+
+            - name: Set up SSH
+              uses: webfactory/ssh-agent@v0.5.3
+              with:
+                  ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+            - name: Copy Files to EC2
+              run: scp -r -o StrictHostKeyChecking=no ./your-local-directory/ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/.
+
+            - name: Create env file and check files in EC2
+              run: |
+                ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+                  echo 'DB_HOST=${{ secrets.DB_HOST }}' > /home/.env
+                  ls -a /home
+                EOF
+
+            - name: Install Docker and Docker Compose on EC2
+              run: |
+                ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+                  sudo apt update
+                  sudo apt install -y docker.io
+                  sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r .tag_name)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+                  sudo chmod +x /usr/local/bin/docker-compose
+                  sudo systemctl start docker
+                  sudo systemctl enable docker
+                EOF
+
+            - name: Run docker compose in the root directory
+              run: |
+                ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+                  cd /home
+                  docker-compose up -d
+                EOF
