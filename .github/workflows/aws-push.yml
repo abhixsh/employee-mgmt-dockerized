@@ -2,7 +2,7 @@ name: Backend And Frontend AWS push
 on: 
     push:
         branches:
-            - main
+            - master
 
 jobs:
     docker-push:

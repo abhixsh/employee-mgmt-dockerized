@@ -2,7 +2,7 @@ name: Backend and Frontend Docker Push
 on: 
   push:
     branches:
-      - main
+      - master
 
 jobs:
     test-backend:
