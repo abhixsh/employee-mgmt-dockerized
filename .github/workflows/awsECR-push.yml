@@ -1,0 +1,29 @@
+name: Backend push to AWS ECR
+on: 
+    workflow_dispatch:
+    # push:
+    #     branches:
+    #         - master
+
+jobs:
+    docker-push:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Get code
+              uses: actions/checkout@v3
+            - name: List All items in root
+              run: ls -a
+            - name: Run docker compose in the root directory
+              run: docker compose up -d
+            - name: Check docker files
+              run: docker ps -a
+            - name: AWS login
+              run: |
+                aws ecr get-login-password --region region | docker login --username AWS --password-stdin aws_account_id.dkr.ecr.region.amazonaws.com
+            - name: All Docker Images
+              run: docker images -a
+            - name: Push Backend to AWS ECR
+              run: |
+                docker tag e9ae3c220b23 aws_account_id.dkr.ecr.region.amazonaws.com/my-repository:tag
+                docker push aws_account_id.dkr.ecr.region.amazonaws.com/my-repository:tag
+              
