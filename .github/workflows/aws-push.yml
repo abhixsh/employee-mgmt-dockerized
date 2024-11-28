@@ -15,5 +15,5 @@ jobs:
             - name: Run docker compose in the root directory
               run: docker compose up -d
             - name: Check docker files
-             run: docker ps -a
+              run: docker ps -a
 
