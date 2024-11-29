@@ -45,12 +45,14 @@ jobs:
             
             - name: run eslint test
               run: |
+                cd frontend
                 npx eslint --init
                 npm run lint
                 npm run lint:fix
 
             - name: run audit
               run: |
+                cd frontend
                 npm audit
                 npm audit fix
 
