@@ -27,3 +27,30 @@ jobs:
                 trivy image emp-backend:latest
                 trivy image nginx:latest
 
+    forntend-test:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Get code
+              uses: actions/checkout@v3
+
+            - name: List files in the root directory
+              run: ls -a
+
+            - name: Install eslint
+              run: |
+                cd frontend
+                sudo apt-get install -y npm
+                npm install -g eslint
+                npm install eslint-plugin-react eslint-plugin-react-hooks --save-dev
+            
+            - name: run eslint test
+              run: |
+                npx eslint --init
+                npm run lint
+                npm run lint:fix
+
+            - name: run audit
+              run: |
+                npm audit
+                npm audit fix
+
