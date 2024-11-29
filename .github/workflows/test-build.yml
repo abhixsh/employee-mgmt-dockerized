@@ -1,4 +1,4 @@
-name: CI Workflow
+name: Testing
 
 on:
   push:
@@ -58,3 +58,27 @@ jobs:
           cd frontend
           npm audit
           npm audit fix
+
+  backend_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+
+      - name: List files in the root directory
+        run: ls -a
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          npm install
+
+      - name: Run jest tests
+        run: |
+          cd backend
+          npm test
