@@ -1,58 +1,60 @@
-name: Run Tests
-on: push
-#   pull_request:
-#     branches:
-#       - master
+name: CI Workflow
+
+on:
+  push:
+    branches:
+      - master
 
 jobs:
-    trivy_scan:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Get code
-              uses: actions/checkout@v3
+  trivy_scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
 
-            - name: List files in the root directory
-              run: ls -a
+      - name: List files in the root directory
+        run: ls -a
 
-            - name: Install Trivy
-              run: |
-                sudo apt-get install -y wget apt-transport-https
-                wget https://github.com/aquasecurity/trivy/releases/download/v0.34.0/trivy_0.34.0_Linux-64bit.deb
-                sudo dpkg -i trivy_0.34.0_Linux-64bit.deb
+      - name: Install Trivy
+        run: |
+          wget https://github.com/aquasecurity/trivy/releases/download/v0.34.0/trivy_0.34.0_Linux-64bit.deb
+          sudo dpkg -i trivy_0.34.0_Linux-64bit.deb
 
-            - name: docker images up
-              run: docker compose up -d
-            - name: run trivy test
-              run: |
-                trivy image emp-backend:latest
-                trivy image nginx:latest
+      - name: Start Docker Compose services
+        run: docker compose up -d
 
-    forntend-test:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Get code
-              uses: actions/checkout@v3
+      - name: Run Trivy scan
+        run: |
+          trivy image emp-backend:latest
+          trivy image nginx:latest
 
-            - name: List files in the root directory
-              run: ls -a
+  frontend_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
 
-            - name: Install eslint
-              run: |
-                cd frontend
-                sudo apt-get install -y npm
-                npm install -g eslint
-                npm install eslint-plugin-react eslint-plugin-react-hooks --save-dev
-            
-            - name: run eslint test
-              run: |
-                cd frontend
-                npx eslint --init
-                npm run lint
-                npm run lint:fix
+      - name: List files in the root directory
+        run: ls -a
 
-            - name: run audit
-              run: |
-                cd frontend
-                npm audit
-                npm audit fix
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Run ESLint
+        run: |
+          cd frontend
+          npm run lint
+          npm run lint:fix
+
+      - name: Run npm audit
+        run: |
+          cd frontend
+          npm audit
+          npm audit fix
