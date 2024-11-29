@@ -17,3 +17,6 @@ app.listen(PORT, () => {
 app.use('/0', (req, res) => {
   res.send('Hello World');
 });
+
+
+export default app;
