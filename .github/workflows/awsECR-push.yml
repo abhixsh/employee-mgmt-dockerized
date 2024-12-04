@@ -31,3 +31,11 @@ jobs:
       - name: List Docker images
         run: docker images -a
 
+      - name: Push Backend Docker image to AWS ECR
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          REPO_NAME: ${{ secrets.REPO_NAME }}
+        run: |
+          docker tag emp-backend $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO_NAME:latest
+          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO_NAME:latest
