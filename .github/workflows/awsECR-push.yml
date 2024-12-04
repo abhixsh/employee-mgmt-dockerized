@@ -1,29 +1,32 @@
 name: Backend push to AWS ECR
 on: 
-    workflow_dispatch:
-    # push:
-    #     branches:
-    #         - master
+  workflow_dispatch:
 
 jobs:
-    docker-push:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Get code
-              uses: actions/checkout@v3
-            - name: List All items in root
-              run: ls -a
-            - name: Run docker compose in the root directory
-              run: docker compose up -d
-            - name: Check docker files
-              run: docker ps -a
-            - name: AWS login
-              run: |
-                aws ecr get-login-password --region region | docker login --username AWS --password-stdin aws_account_id.dkr.ecr.region.amazonaws.com
-            - name: All Docker Images
-              run: docker images -a
-            - name: Push Backend to AWS ECR
-              run: |
-                docker tag e9ae3c220b23 aws_account_id.dkr.ecr.region.amazonaws.com/my-repository:tag
-                docker push aws_account_id.dkr.ecr.region.amazonaws.com/my-repository:tag
-              
+  docker-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: List files in root directory
+        run: ls -a
+
+      - name: Run Docker Compose
+        run: docker compose up -d
+
+      - name: Check running Docker containers
+        run: docker ps -a
+
+      - name: Login to AWS ECR
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          aws ecr get-login-password --region $AWS_REGION | \
+          docker login --username AWS --password-stdin ${{ secrets.AWS_ACCESS_KEY_ID }}.dkr.ecr.$AWS_REGION.amazonaws.com
+
+      - name: List Docker images
+        run: docker images -a
+
