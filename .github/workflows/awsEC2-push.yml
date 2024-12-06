@@ -36,6 +36,7 @@ jobs:
                 git init
                 git clone https://github.com/abhixsh/employee-mgmt-dockerized
                 git pull origin main
+                ls -a
                 EOF
 
 
