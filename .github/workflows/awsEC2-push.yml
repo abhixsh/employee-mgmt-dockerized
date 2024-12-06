@@ -31,10 +31,6 @@ jobs:
             - name: Clone Repository on EC2
               run: |
                 ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-                sudo apt-get autoremove -y
-                sudo apt-get clean
-                sudo journalctl --vacuum-size=50M
-                sudo apt update
                 sudo apt install -y git
                 cd /home/emp
                 git clone https://github.com/abhixsh/employee-mgmt-dockerized
