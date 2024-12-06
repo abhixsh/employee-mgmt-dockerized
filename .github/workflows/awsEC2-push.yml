@@ -37,7 +37,7 @@ jobs:
                 sudo apt update
                 sudo apt install -y git
                 cd /home/emp
-                git clone https://github.com/your-username/your-repo-name.git
+                git clone https://github.com/abhixsh/employee-mgmt-dockerized
                 git pull origin main
                 EOF
 
