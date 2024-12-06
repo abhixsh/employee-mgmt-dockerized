@@ -21,12 +21,18 @@ jobs:
               with:
                   ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+            - name: Create emp folder on EC2
+              run: |
+                ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+                mkdir -p /home/emp
+                EOF
+                
             - name: Copy Files to EC2
               run: |
-                  scp -r -o StrictHostKeyChecking=no /* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/emp/
-                  ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-                  ls -a /home/emp
-                  EOF
+                scp -r -o StrictHostKeyChecking=no /* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/emp/
+                ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+                ls -a /home/emp
+                EOF
 
 
             - name: Create env file and check files in EC2
