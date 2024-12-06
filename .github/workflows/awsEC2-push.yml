@@ -24,7 +24,8 @@ jobs:
             - name: Create emp folder on EC2
               run: |
                 ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-                mkdir -p /home/emp
+                sudo mkdir -p /home/emp
+                sudo chown $USER:$USER /home/emp
                 EOF
                 
             - name: Copy Files to EC2
