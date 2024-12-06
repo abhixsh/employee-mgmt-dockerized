@@ -28,11 +28,14 @@ jobs:
                 sudo chown $USER:$USER /home/emp
                 EOF
                 
-            - name: Copy Files to EC2
+            - name: Clone Repository on EC2
               run: |
-                scp -r -o StrictHostKeyChecking=no /* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/emp/
                 ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-                ls -a /home/emp
+                sudo apt update
+                sudo apt install -y git
+                cd /home/emp
+                git clone https://github.com/your-username/your-repo-name.git
+                git pull origin main
                 EOF
 
 
