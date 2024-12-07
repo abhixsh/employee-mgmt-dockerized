@@ -62,8 +62,10 @@ jobs:
             - name: Build frontend
               run: |
                 ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-                  cd /home/emp/employee-mgmt-dockerized/frontend
+                  sudo chown -R $USER:$USER /home/emp/employee-mgmt-dockerized/frontend/build
+                  sudo chmod -R 755 /home/emp/employee-mgmt-dockerized/frontend/build
                   sudo apt install -y nodejs npm
+                  cd /home/emp/employee-mgmt-dockerized/frontend
                   npm install
                   npm run build
                 EOF
