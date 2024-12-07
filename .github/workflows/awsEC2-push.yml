@@ -63,6 +63,7 @@ jobs:
               run: |
                 ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
                   cd /home/emp/employee-mgmt-dockerized/frontend
+                  sudo apt install -y nodejs npm
                   npm install
                   npm run build
                 EOF
