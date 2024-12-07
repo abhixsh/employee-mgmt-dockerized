@@ -25,7 +25,7 @@ You can try the live version of this project by visiting the following link: [Li
 - **AWS:** For cloud deployment and container management.
 
 ## Project Images
-![Landing Page](img/image.png)
+![Landing Page](img/landing.png)
 ![Senior Section](img/image-1.png)
 ![Add Emp](img/image-2.png)
 ![Add Emp](img/image-3.png)
@@ -468,7 +468,7 @@ jobs:
                     trivy fs --severity HIGH,CRITICAL --exit-code 1 --no-progress .
                 # Scans the repository's Dockerfiles for vulnerabilities. It exits with a non-zero code if high/critical vulnerabilities are found.
 ```
-
+![alt text](img/image.png)
 ### Explanation:
 
 - The workflow scans the Dockerfiles for vulnerabilities using Trivy.
@@ -518,7 +518,8 @@ jobs:
                     EOF
                 # Pulls the latest Docker image for the frontend and deploys it to EC2.
 ```
-
+![alt text](img/ip.png)
+![alt text](img/ec2.png)
 ### Explanation:
 
 - This workflow uses SSH to connect to your EC2 instance and deploys the backend and frontend Docker images pulled from ECR.
