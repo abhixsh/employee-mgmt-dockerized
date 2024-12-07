@@ -22,6 +22,7 @@ You can try the live version of this project by visiting the following link: [Li
 - **Docker:** Containerization for consistent deployment across environments.
 - **Nginx:** Web server to serve the React app in production.
 - **GitHub Action:** Automates testing and deployment pipelines.
+- **AWS:** For cloud deployment and container management.
 
 ## Project Images
 ![Landing Page](img/image.png)
@@ -366,3 +367,166 @@ To store your Docker Hub credentials securely in the GitHub repository:
 1. Commit and push the `backend-docker-push.yml` file to your repository.
 2. Check the **Actions** tab in your GitHub repository to monitor the workflow's execution.
 3. Once complete, the backend and frontend Docker images will be available on Docker Hub under your account, tagged as `latest`.
+
+## GitHub Action to Push Docker Images to ECR
+
+This workflow pushes the backend Docker image to Amazon ECR.
+
+### Step 14: GitHub Actions Workflow: `backend-docker-push-to-ecr.yml`
+
+```yaml
+name: Push Backend Docker Image to ECR
+
+on:
+    push:
+        branches:
+            - main  # Adjust the branch name if needed
+
+jobs:
+    build-and-push:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+                uses: actions/checkout@v3
+
+            - name: Set up Docker Buildx
+                uses: docker/setup-buildx-action@v2
+                # Allows for advanced Docker Build features
+
+            - name: Login to AWS ECR
+                run: |
+                    aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+                    aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                    aws configure set default.region ${{ secrets.AWS_DEFAULT_REGION }}
+                    aws ecr get-login-password --region ${{ secrets.AWS_DEFAULT_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_DEFAULT_REGION }}.amazonaws.com
+                # Logs into AWS ECR using AWS credentials stored in GitHub Secrets
+
+            - name: Build Docker Image
+                run: |
+                    docker-compose build backend
+                # Builds the Docker image for the backend from docker-compose.
+
+            - name: Tag Docker Image
+                run: |
+                    docker tag backend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_DEFAULT_REGION }}.amazonaws.com/emp-backend:latest
+                # Tags the built backend Docker image.
+
+            - name: Push Backend Image to ECR
+                run: |
+                    docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_DEFAULT_REGION }}.amazonaws.com/emp-backend:latest
+                # Pushes the backend Docker image to ECR.
+```
+
+### Explanation:
+
+- This workflow is triggered on a push to the main branch.
+- It logs into AWS using credentials stored in GitHub Secrets (AWS Access Key, Secret Key, AWS Region, and Account ID).
+- It builds the backend Docker image and pushes it to an ECR repository (emp-backend).
+
+### Setting up AWS Secrets:
+
+Go to your repository’s **Settings > Secrets and variables > Actions** and add:
+
+- `AWS_ACCESS_KEY_ID`: Your AWS access key.
+- `AWS_SECRET_ACCESS_KEY`: Your AWS secret key.
+- `AWS_ACCOUNT_ID`: Your AWS account ID.
+- `AWS_DEFAULT_REGION`: The AWS region (e.g., us-west-2).
+
+### Step 15: GitHub Action for Dockerfile Vulnerability Scanning with Trivy
+
+This workflow scans your Dockerfiles for security vulnerabilities using Trivy.
+
+### GitHub Actions Workflow: `docker-vulnerability-scan.yml`
+
+```yaml
+name: Scan Docker Images for Vulnerabilities
+
+on:
+    push:
+        branches:
+            - main  # Adjust the branch name if needed
+
+jobs:
+    vulnerability-scan:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+                uses: actions/checkout@v3
+
+            - name: Install Trivy
+                run: |
+                    sudo apt-get update
+                    sudo apt-get install -y wget
+                    wget https://github.com/aquasecurity/trivy/releases/download/v0.29.2/trivy_0.29.2_Linux-64bit.deb
+                    sudo dpkg -i trivy_0.29.2_Linux-64bit.deb
+                # Installs Trivy on the runner
+
+            - name: Scan Dockerfile for Vulnerabilities
+                run: |
+                    trivy fs --severity HIGH,CRITICAL --exit-code 1 --no-progress .
+                # Scans the repository's Dockerfiles for vulnerabilities. It exits with a non-zero code if high/critical vulnerabilities are found.
+```
+
+### Explanation:
+
+- The workflow scans the Dockerfiles for vulnerabilities using Trivy.
+- If any critical or high vulnerabilities are found, it will fail the pipeline (exit-code 1).
+
+### Step 16: GitHub Action to Deploy Backend and Frontend to EC2
+
+This workflow deploys your backend and frontend Docker containers to an EC2 instance using SSH.
+
+### GitHub Actions Workflow: `deploy-to-ec2.yml`
+
+```yaml
+name: Deploy to EC2
+
+on:
+    push:
+        branches:
+            - main  # Trigger on push to main
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+                uses: actions/checkout@v3
+
+            - name: Set up SSH for EC2
+                uses: webfactory/ssh-agent@v0.5.3
+                with:
+                    ssh-private-key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+                # Configures SSH to communicate with EC2 using the private key stored in GitHub secrets.
+
+            - name: Copy Backend Docker Image to EC2
+                run: |
+                    ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+                        docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_DEFAULT_REGION }}.amazonaws.com/emp-backend:latest
+                        docker-compose -f /path/to/your/backend/docker-compose.yml up -d
+                    EOF
+                # Pulls the latest Docker image from ECR and deploys the backend to EC2 using `docker-compose`.
+
+            - name: Copy Frontend Docker Image to EC2
+                run: |
+                    ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+                        docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_DEFAULT_REGION }}.amazonaws.com/emp-frontend:latest
+                        docker-compose -f /path/to/your/frontend/docker-compose.yml up -d
+                    EOF
+                # Pulls the latest Docker image for the frontend and deploys it to EC2.
+```
+
+### Explanation:
+
+- This workflow uses SSH to connect to your EC2 instance and deploys the backend and frontend Docker images pulled from ECR.
+- It assumes the `docker-compose.yml` file is present on the EC2 instance, which defines how to run the containers for both backend and frontend.
+
+### Setting up EC2 SSH Secrets:
+
+In your repository's **Settings > Secrets and variables > Actions**, add the following secrets:
+
+- `EC2_SSH_PRIVATE_KEY`: Your private SSH key to access the EC2 instance.
+- `EC2_PUBLIC_IP`: The public IP address of your EC2 instance.
