@@ -368,11 +368,11 @@ To store your Docker Hub credentials securely in the GitHub repository:
 2. Check the **Actions** tab in your GitHub repository to monitor the workflow's execution.
 3. Once complete, the backend and frontend Docker images will be available on Docker Hub under your account, tagged as `latest`.
 
-## GitHub Action to Push Docker Images to ECR
+### Step 14: GitHub Action to Push Docker Images to ECR
 
 This workflow pushes the backend Docker image to Amazon ECR.
 
-### Step 14: GitHub Actions Workflow: `backend-docker-push-to-ecr.yml`
+### GitHub Actions Workflow: `backend-docker-push-to-ecr.yml`
 
 ```yaml
 name: Push Backend Docker Image to ECR
